@@ -45,38 +45,38 @@ public class EchoServer implements Runnable {
 		final ChannelHandler stringEncoder = new StringEncoder(Charset.forName("UTF-8"));
 		final ChannelHandler stringDecoder = new StringDecoder(Charset.forName("UTF-8"));
 		final ChannelHandler loggingHandler = new LoggingHandler();
-		
+
 		ServerBootstrap bootstrap = new ServerBootstrap(factory);
 
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory(){
-            public ChannelPipeline getPipeline() throws Exception {
-                ChannelPipeline pipeline = Channels.pipeline();
-                pipeline.addLast("logger", loggingHandler);
-                pipeline.addLast("framer", new DelimiterBasedFrameDecoder(512, true, Delimiters.lineDelimiter()));
-                pipeline.addLast("decoder", stringDecoder);
-                pipeline.addLast("encoder", stringEncoder);
-                pipeline.addLast("echo", new EchoServerHandler());
-                return pipeline;
-            }
+		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+				pipeline.addLast("logger", loggingHandler);
+				pipeline.addLast("framer", new DelimiterBasedFrameDecoder(512, true, Delimiters.lineDelimiter()));
+				pipeline.addLast("decoder", stringDecoder);
+				pipeline.addLast("encoder", stringEncoder);
+				pipeline.addLast("echo", new EchoServerHandler());
+				return pipeline;
+			}
 		});
 
 		bootstrap.setOption("child.tcpNoDelay", true);
 		bootstrap.setOption("child.keepAlive", true);
 
-		Runtime.getRuntime().addShutdownHook(new Thread(){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				logger.debug("Shutting down server");
 				channelGroup.close().awaitUninterruptibly();
 				logger.debug("Server shutted down");
 			}
 		});
-		
+
 		int port = 8080;
-		
+
 		logger.debug("binding to port " + port);
-		
+
 		channelGroup.add(bootstrap.bind(new InetSocketAddress(port)));
-		
+
 		logger.info("bound to port " + port);
 	}
 
