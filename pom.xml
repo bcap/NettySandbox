@@ -130,4 +130,16 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+                <repository>
+                        <id>repo.bcap.me-releases</id>
+                        <url>http://repo.bcap.me/nexus/content/repositories/releases</url>
+                </repository>
+                <snapshotRepository>
+                        <id>repo.bcap.me-snapshots</id>
+                        <url>http://repo.bcap.me/nexus/content/repositories/snapshots</url>
+                </snapshotRepository>
+        </distributionManagement>
+
 </project>
